@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant browser
+    participant server
+
+    browser->>browser: Textbox field is filled
+
+    browser->>browser: note added to ul list
+
+    browser->>server: POST note as json to https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+    activate server
+    server-->>browser: status code 201
+    deactivate server
+
