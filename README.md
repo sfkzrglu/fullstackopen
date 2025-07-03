@@ -9,4 +9,4 @@ The primary focus is on building single-page applications with ReactJS that conn
 
 ### [Part 2 - Communicating with server](./part2)
 
-### [Part 2 - Programming a server with NodeJS and Express](./part3)
+### [Part 3 - Programming a server with NodeJS and Express](./part3)
