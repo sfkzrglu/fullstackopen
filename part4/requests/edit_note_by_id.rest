@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/notes/6833487a178a982477b451e1 HTTP/1.1
+content-type: application/json
+
+{
+    "content": "ensure that everying still works edited",
+    "importent": true
+}
