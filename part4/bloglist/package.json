@@ -10,7 +10,9 @@
 		"lodash": "^4.17.21",
 		"mongoose": "^8.16.1"
 	},
-	"devDependencies": {},
+	"devDependencies": {
+		"supertest": "^7.1.4"
+	},
 	"scripts": {
 		"start": "cross-env NODE_ENV=production node index.js",
 		"dev": "cross-env NODE_ENV=development node --watch index.js",
