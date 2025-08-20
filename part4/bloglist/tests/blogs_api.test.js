@@ -61,6 +61,22 @@ test('all blogs have like property', async () => {
 	assert.strictEqual(blogsWithNoLikes, false)
 })
 
+
+test("the title or url properties are missing from the request data giving error 400", async () => {
+	const newBlog = {
+		//title: 'test post blog',
+		author: "Michael Chan",
+		//url: "https://reactpatterns.com/",
+		likes: 10,
+	}
+	await api.post("/api/blogs")
+		.send(newBlog)
+		.expect(400)
+		.expect('Content-Type', /application\/json/)
+
+});
+
+
 after(async () => {
 	await mongoose.connection.close()
 })
