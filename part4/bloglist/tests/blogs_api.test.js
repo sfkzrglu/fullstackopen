@@ -45,14 +45,22 @@ test("a blog is created", async () => {
 		.expect(201)
 		.expect('Content-Type', /application\/json/);
 
-	const blogsInDb=await helpers.blogsInDb()
-	assert.strictEqual(blogsInDb.length,helpers.initialBlogs.length+1)
+	const blogsInDb = await helpers.blogsInDb()
+	assert.strictEqual(blogsInDb.length, helpers.initialBlogs.length + 1)
 
-	const titles=blogsInDb.map(t=>t.title)
+	const titles = blogsInDb.map(t => t.title)
 
 	assert(titles.includes('test post blog'))
 });
 
+
+test('all blogs have like property', async () => {
+	const blogsInDb = await helpers.blogsInDb()
+
+	const blogsWithNoLikes = blogsInDb.some(blog => blog.likes === undefined || blog.likes === null)
+	assert.strictEqual(blogsWithNoLikes, false)
+})
+
 after(async () => {
-  await mongoose.connection.close()
+	await mongoose.connection.close()
 })
