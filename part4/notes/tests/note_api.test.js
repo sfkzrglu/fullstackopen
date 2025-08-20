@@ -52,7 +52,7 @@ test('a valid note can be added ', async () => {
   assert(contents.includes('async/await simplifies making async calls'))
 })
 
-test('note without content is not added', async () => {
+test.only('note without content is not added', async () => {
   const newNote = {
     important: true,
   }
