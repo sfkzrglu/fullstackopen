@@ -61,7 +61,6 @@ test('all blogs have like property', async () => {
 	assert.strictEqual(blogsWithNoLikes, false)
 })
 
-
 test("the title or url properties are missing from the request data giving error 400", async () => {
 	const newBlog = {
 		//title: 'test post blog',
@@ -75,6 +74,19 @@ test("the title or url properties are missing from the request data giving error
 		.expect('Content-Type', /application\/json/)
 
 });
+
+test('deletion of a blog', async () => {
+	const blogsAtStart = await helpers.blogsInDb()
+	const blogToDelete = blogsAtStart[0]
+	
+	const r=await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+	const blogsAtEnd = await helpers.blogsInDb()
+	const titles = blogsAtEnd.map(b => b.title)
+	assert(!titles.includes(blogToDelete.title))
+	
+	assert.strictEqual(blogsAtEnd.length, helpers.initialBlogs.length - 1)
+})
 
 
 after(async () => {
