@@ -8,6 +8,7 @@ const helpers = require("./test_helper");
 
 const api = supertest(app);
 
+
 beforeEach(async () => {
 	await Blog.deleteMany({});
 	await Blog.insertMany(helpers.initialBlogs);
@@ -63,9 +64,9 @@ test('all blogs have like property', async () => {
 
 test("the title or url properties are missing from the request data giving error 400", async () => {
 	const newBlog = {
-		//title: 'test post blog',
+		title: 'test post blog',
 		author: "Michael Chan",
-		//url: "https://reactpatterns.com/",
+		url: "https://reactpatterns.com/",
 		likes: 10,
 	}
 	await api.post("/api/blogs")
@@ -78,15 +79,32 @@ test("the title or url properties are missing from the request data giving error
 test('deletion of a blog', async () => {
 	const blogsAtStart = await helpers.blogsInDb()
 	const blogToDelete = blogsAtStart[0]
-	
-	const r=await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+	await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 
 	const blogsAtEnd = await helpers.blogsInDb()
 	const titles = blogsAtEnd.map(b => b.title)
 	assert(!titles.includes(blogToDelete.title))
-	
+
 	assert.strictEqual(blogsAtEnd.length, helpers.initialBlogs.length - 1)
 })
+
+test("update likes of a blog", async () => {
+	const blogsAtStart = await helpers.blogsInDb()
+	const blogToUpdate = blogsAtStart[0]
+	blogToUpdate.likes += 1
+
+	await api.put(`/api/blogs/${blogToUpdate.id}`)
+		.send(blogToUpdate)
+		.expect('Content-Type', /application\/json/)
+		.expect(200)
+
+	const blogAtEnd = await api.get(`/api/blogs/${blogToUpdate.id}`)
+		.expect('Content-Type', /application\/json/)
+		.expect(200)
+
+	assert.strictEqual(blogToUpdate.likes, blogAtEnd.body.likes);
+});
 
 
 after(async () => {
