@@ -42,9 +42,21 @@ describe('when there is initially some notes saved', () => {
 	})
 
 	test('a valid note can be added ', async () => {
-		const usersInDb = await helper.usersInDb()
-		const user = usersInDb[0]
+		const userLoginInfo = {
+			username: 'testuser',
+			password: "sekret"
+		}
 
+		const login = await api
+			.post('/api/login')
+			.send(userLoginInfo)
+			.expect(200)
+			.expect('Content-Type', /application\/json/)
+
+		const usersInDb = await helper.usersInDb()
+		const user = usersInDb.find(u => u.username === userLoginInfo.username)
+		assert.notStrictEqual(user, undefined)
+		
 		const newNote = {
 			content: 'async/await simplifies making async calls',
 			important: true,
@@ -54,8 +66,10 @@ describe('when there is initially some notes saved', () => {
 		await api
 			.post('/api/notes')
 			.send(newNote)
+			.auth(login.body.token, { type: "bearer" })
 			.expect(201)
 			.expect('Content-Type', /application\/json/)
+
 
 		const notesAtEnd = await helper.notesInDb()
 		assert.strictEqual(notesAtEnd.length, helper.initialNotes.length + 1)
@@ -63,9 +77,9 @@ describe('when there is initially some notes saved', () => {
 		const contents = notesAtEnd.map((n) => n.content)
 		assert(contents.includes('async/await simplifies making async calls'))
 
-		const users = notesAtEnd.map((n) => {return n.user && n.user.toString()})
+		const users = notesAtEnd.map((n) => { return n.user && n.user.toString() })
 		assert(users.includes(user.id))
-		
+
 	})
 
 	test('note without content is not added', async () => {
