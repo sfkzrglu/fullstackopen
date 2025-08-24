@@ -9,10 +9,10 @@ usersRouter.post("", async (request, response) => {
 		return response.status(400).json({ error: "username or password is missing!" })
 	}
 
-	if ( password.toString().length < 3) {
+	if (password.toString().length < 3) {
 		return response.status(400).json({ error: "password must be at least 3 characters long!" })
 	}
-	
+
 	const passwordHash = await bcrypt.hash(password, 10)
 	const user = User({
 		username,
@@ -24,8 +24,7 @@ usersRouter.post("", async (request, response) => {
 });
 
 usersRouter.get('/', async (request, response) => {
-	const users = await User
-		.find({}).populate('blogs')
+	const users = await User.find({}).populate('blogs', { title: 1, author: 1 })
 	response.json(users)
 })
 
